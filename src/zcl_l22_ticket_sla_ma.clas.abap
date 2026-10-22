@@ -6,7 +6,7 @@ CLASS zcl_l22_ticket_sla_ma DEFINITION
   PUBLIC SECTION.
     INTERFACES if_oo_adt_classrun.
 
-    TYPES ty_priority TYPE c LENGTH 1.
+    TYPES ty_priority TYPE c  LENGTH 1.
 
     CLASS-METHODS response_hours
       IMPORTING
@@ -19,23 +19,41 @@ CLASS zcl_l22_ticket_sla_ma IMPLEMENTATION.
 
   METHOD response_hours.
 
-    IF iv_priority = 'H'.
-      rv_hours = 4.
-    ELSE.
-      rv_hours = 8.
-    ENDIF.
+    CASE iv_priority.
 
-    IF iv_is_vip = abap_true.
-      rv_hours = rv_hours + 1.
-    ENDIF.
+        WHEN 'N'.
+          IF iv_is_vip = abap_true.
+            rv_hours = 7.
+          ELSE.
+            rv_hours = 8.
+          ENDIF.
 
+        WHEN 'H'.
+          IF iv_is_vip = abap_true.
+            rv_hours = 1.
+          ELSE.
+            rv_hours = 2.
+          ENDIF.
+
+        WHEN 'X'.
+          IF iv_is_vip = abap_true.
+            rv_hours = 0.
+          ELSE.
+            rv_hours = 0.
+          ENDIF.
+
+        WHEN OTHERS.
+            rv_hours = 2.
+
+    ENDCASE.
   ENDMETHOD.
 
   METHOD if_oo_adt_classrun~main.
 
     DATA(hours) = response_hours(
-      iv_priority = 'H'
+      iv_priority = 'h'
       iv_is_vip   = abap_false ).
+
 
     out->write( |High-priority result: { hours } hour(s)| ).
     out->write( 'Expected: 2 hour(s)' ).

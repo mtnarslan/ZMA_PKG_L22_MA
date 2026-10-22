@@ -9,6 +9,9 @@ CLASS ltc_ticket_sla DEFINITION FINAL FOR TESTING
     METHODS normal_vip FOR TESTING.
     METHODS invalid_standard FOR TESTING.
     METHODS invalid_vip FOR TESTING.
+    METHODS lowercase_standart FOR TESTING.
+    METHODS lowercase_vip FOR TESTING.
+
 ENDCLASS.
 
 CLASS ltc_ticket_sla IMPLEMENTATION.
@@ -79,6 +82,30 @@ CLASS ltc_ticket_sla IMPLEMENTATION.
       exp = 0
       act = actual
       msg = 'Invalid-priority response time must be 0 hours' ).
+  ENDMETHOD.
+
+  METHOD lowercase_standart.
+     DATA(actual) = zcl_l22_ticket_sla_ma=>response_hours(
+    iv_priority = 'n'
+    iv_is_vip = abap_false ).
+
+    cl_abap_unit_assert=>assert_equals(
+      exp = 0
+      act = actual
+      msg = 'Lowercase-priority response time must be 0 hours' ).
+
+  ENDMETHOD.
+
+  METHOD lowercase_vip.
+     DATA(actual) = zcl_l22_ticket_sla_ma=>response_hours(
+    iv_priority = 'n'
+    iv_is_vip = abap_true ).
+
+    cl_abap_unit_assert=>assert_equals(
+      exp = 0
+      act = actual
+      msg = 'Lowercase-priority response time must be 0 hours' ).
+
   ENDMETHOD.
 
 ENDCLASS.
